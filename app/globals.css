@@ -1,0 +1,448 @@
+:root {
+  color-scheme: dark;
+  --background: #0b0d10;
+  --surface: #12161b;
+  --surface-raised: #171c22;
+  --border: #333840;
+  --text: #f0f1f2;
+  --muted: #a4a9b0;
+  --accent: #f0b35a;
+  --accent-dark: #382a16;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgb(255 255 255 / 2.2%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 2.2%) 1px, transparent 1px);
+  background-size: 40px 40px;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.shell {
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.topbar {
+  min-height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #74562c;
+  border-radius: 10px;
+  color: var(--accent);
+  background: var(--accent-dark);
+  font-size: 14px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgb(115 226 167 / 10%);
+}
+
+.hero {
+  padding: 86px 0 54px;
+  max-width: 690px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  text-wrap: pretty;
+}
+
+h1 {
+  margin: 0;
+  max-width: 660px;
+  font-size: clamp(42px, 7vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+  font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+}
+
+.intro {
+  margin: 26px 0 0;
+  max-width: 610px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.activityPanel {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgb(18 22 27 / 90%);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 22%);
+}
+
+.panelHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 23px 26px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panelHeading .eyebrow {
+  margin-bottom: 6px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.eventCount {
+  padding: 7px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: var(--surface-raised);
+  font-size: 12px;
+}
+
+.emptyState {
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  padding: 42px 24px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 20px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.emptyState h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.emptyState p {
+  margin: 10px 0 0;
+  max-width: 420px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.activityList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activityItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 18px;
+  padding: 28px 26px;
+}
+
+.activityItem + .activityItem {
+  border-top: 1px solid var(--border);
+}
+
+.activityItem article {
+  min-width: 0;
+}
+
+.timelineMark {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  margin-top: 7px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--surface);
+}
+
+.activityItem:not(:last-child) .timelineMark::after {
+  position: absolute;
+  top: 11px;
+  left: 2px;
+  width: 2px;
+  height: calc(100% + 76px);
+  content: "";
+  background: var(--border);
+}
+
+.activityMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.activityMeta p {
+  margin: 0;
+}
+
+.activityMeta a,
+.repositoryLink {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.activityMeta time,
+.eventCount,
+.commit code {
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+
+.activityMeta time {
+  flex: 0 0 auto;
+  font-size: 12px;
+}
+
+.branch,
+.commit code {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface-raised);
+  font-family: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+}
+
+.branch {
+  padding: 2px 6px;
+  color: #d6d9dd;
+  font-size: 12px;
+}
+
+.repositoryLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 18px;
+  letter-spacing: -0.015em;
+}
+
+.commit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.commit code {
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.commit span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.branchDeletion {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.activityList a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.errorPage {
+  padding-top: 14vh;
+}
+
+.errorPage h1 {
+  max-width: 760px;
+}
+
+.errorPage button {
+  min-width: 120px;
+  min-height: 44px;
+  margin-top: 28px;
+  border: 1px solid #74562c;
+  border-radius: 9px;
+  color: var(--text);
+  background: var(--accent-dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.loadingTopbar,
+.loadingHero span,
+.loadingPanel span {
+  display: block;
+  border-radius: 8px;
+  background: #1b2026;
+  animation: loadingPulse 1.3s ease-in-out infinite alternate;
+}
+
+.loadingTopbar {
+  width: 160px;
+  height: 34px;
+  margin-top: 24px;
+}
+
+.loadingHero {
+  display: grid;
+  gap: 15px;
+  padding: 96px 0 58px;
+}
+
+.loadingHero span:nth-child(1) {
+  width: 120px;
+  height: 12px;
+}
+
+.loadingHero span:nth-child(2) {
+  width: min(680px, 90%);
+  height: 68px;
+}
+
+.loadingHero span:nth-child(3) {
+  width: min(520px, 75%);
+  height: 20px;
+}
+
+.loadingPanel {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.loadingPanel span {
+  height: 92px;
+  border-radius: 0;
+}
+
+@keyframes loadingPulse {
+  to {
+    background: #252b32;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loadingTopbar,
+  .loadingHero span,
+  .loadingPanel span {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .shell {
+    width: min(100% - 28px, 1080px);
+  }
+
+  .topbar {
+    min-height: 70px;
+  }
+
+  .status {
+    font-size: 0;
+  }
+
+  .hero {
+    padding: 64px 0 40px;
+  }
+
+  .panelHeading {
+    padding: 20px;
+  }
+
+  .activityItem {
+    gap: 12px;
+    padding: 24px 20px;
+  }
+
+  .activityMeta {
+    display: block;
+  }
+
+  .activityMeta time {
+    display: block;
+    margin-top: 7px;
+  }
+}
