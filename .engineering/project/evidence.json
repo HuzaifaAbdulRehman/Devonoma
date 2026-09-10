@@ -1,0 +1,323 @@
+{
+  "schemaVersion": 3,
+  "phase": "build",
+  "recommendation": "go",
+  "recommendationReason": "Build a narrow personal GitHub event ledger because HookRelay addresses a documented failed-delivery gap, while keeping the product distinct from GitHub Notifications and proving value through one real retry recovery.",
+  "researchCompletedAt": "2026-09-10",
+  "createdAt": "2026-09-10",
+  "refreshedAt": "2026-09-10",
+  "project": {
+    "name": "Devonoma",
+    "problem": "A temporary failure at a GitHub webhook receiver can leave a personal project without the event because GitHub does not automatically redeliver failed webhook deliveries.",
+    "user": "Huzaifa, operating one or two personal GitHub repositories.",
+    "outcome": "A durable, readable timeline proves which selected GitHub events were received and processed, including an event recovered after a receiver failure.",
+    "deadline": null,
+    "type": "web-app",
+    "stack": [
+      "TypeScript",
+      "Next.js App Router",
+      "React",
+      "PostgreSQL",
+      "Vercel Functions",
+      "HookRelay on Node.js 24 with Fastify, Redis, and BullMQ"
+    ],
+    "deliverySurface": "A personal Next.js dashboard and short webhook receiver deployed to Vercel; HookRelay remains a separate long-running service.",
+    "riskClass": "normal",
+    "triggeredOverlays": [
+      "personal-data",
+      "high-trust",
+      "contract-change",
+      "user-interface",
+      "operated-service",
+      "distributed-behavior",
+      "external-dependency",
+      "ai-assisted",
+      "public-source-licensing",
+      "legal-release"
+    ],
+    "overlayDecision": "The app stores GitHub actor and repository metadata, verifies a shared secret, changes the HookRelay-to-consumer contract, exposes a UI and operated receiver, depends on GitHub/Vercel/Postgres, and will later become public source. It has retries and duplicate delivery across two services. AI-assisted and legal-release checks apply before publication. Money, irreversible actions, business continuity, distributed artifacts, and AI product behavior are outside scope."
+  },
+  "repositorySearch": {
+    "status": "completed",
+    "capability": "Official or maintained implementations for validating typed GitHub webhook events in a Next.js/Vercel receiver and persisting a small activity feed.",
+    "completedAt": "2026-09-10",
+    "shortlistCount": 3,
+    "summary": "Octokit's webhook tools are credible references but unnecessary for the first one-event slice; native Node HMAC keeps the relay contract small. The Vercel admin template is stale and adds authentication and product structure Devonoma does not need. Build a fresh small app."
+  },
+  "claims": [
+    {
+      "id": "claim-github-no-auto-redelivery",
+      "status": "verified",
+      "text": "GitHub does not automatically redeliver failed webhook deliveries.",
+      "sourceIds": ["source-github-failed-deliveries"]
+    },
+    {
+      "id": "claim-github-timeout",
+      "status": "verified",
+      "text": "GitHub terminates a webhook delivery when the receiver does not respond within ten seconds and recommends asynchronous processing for longer work.",
+      "sourceIds": ["source-github-troubleshooting"]
+    },
+    {
+      "id": "claim-native-notifications",
+      "status": "verified",
+      "text": "GitHub already provides a notification inbox with filtering and triage, so Devonoma should not compete as a general notification client.",
+      "sourceIds": ["source-github-notifications"]
+    },
+    {
+      "id": "claim-events-api-not-realtime",
+      "status": "verified",
+      "text": "GitHub's Events API is not designed for real-time use, which makes webhooks appropriate for a live event ledger.",
+      "sourceIds": ["source-github-events-api"]
+    },
+    {
+      "id": "claim-vercel-body-limit",
+      "status": "verified",
+      "text": "Vercel Functions limit request and response bodies to 4.5 MB.",
+      "sourceIds": ["source-vercel-limits"]
+    },
+    {
+      "id": "claim-hookrelay-contract-gap",
+      "status": "verified",
+      "text": "HookRelay previously sent the raw payload, a regenerated signature, and relay IDs without forwarding the X-GitHub-Event header.",
+      "runIds": ["run-hookrelay-contract-scan", "run-hookrelay-contract-tests"]
+    },
+    {
+      "id": "claim-hookrelay-five-mb",
+      "status": "verified",
+      "text": "HookRelay accepts webhook bodies up to 5 MB by default.",
+      "runIds": ["run-hookrelay-contract-scan"]
+    },
+    {
+      "id": "claim-signature-raw-body",
+      "status": "verified",
+      "text": "A receiver should verify X-Hub-Signature-256 against the exact request body with a timing-safe comparison.",
+      "sourceIds": ["source-github-signatures"]
+    },
+    {
+      "id": "claim-retry-recovery-observed",
+      "status": "verified",
+      "text": "A signed push survived a temporary Devonoma database failure, succeeded on a later HookRelay attempt, and produced one activity row.",
+      "runIds": ["run-local-retry-recovery"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-github-failed-deliveries",
+      "title": "Handling failed webhook deliveries",
+      "url": "https://docs.github.com/en/webhooks/using-webhooks/handling-failed-webhook-deliveries",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Establishes the concrete reliability gap HookRelay fills."
+    },
+    {
+      "id": "source-github-troubleshooting",
+      "title": "Troubleshooting webhooks",
+      "url": "https://docs.github.com/en/webhooks/testing-and-troubleshooting-webhooks/troubleshooting-webhooks",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Requires the Devonoma receiver to store quickly and return before doing extra work."
+    },
+    {
+      "id": "source-github-notifications",
+      "title": "Configuring notifications",
+      "url": "https://docs.github.com/en/subscriptions-and-notifications/get-started/configuring-notifications",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Rejects positioning Devonoma as a general GitHub inbox."
+    },
+    {
+      "id": "source-github-events-api",
+      "title": "REST API endpoints for events",
+      "url": "https://docs.github.com/en/rest/activity/events",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Supports a webhook-driven live ledger instead of polling for the first slice."
+    },
+    {
+      "id": "source-vercel-limits",
+      "title": "Vercel Functions limits",
+      "url": "https://vercel.com/docs/functions/limitations",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Creates a hard payload ceiling below HookRelay's default and rules out hosting the long-running relay worker as a normal function."
+    },
+    {
+      "id": "source-vercel-functions",
+      "title": "Vercel Functions",
+      "url": "https://vercel.com/docs/functions",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Supports a short Next.js request handler with durable state kept in external Postgres."
+    },
+    {
+      "id": "source-github-payloads",
+      "title": "Webhook events and payloads",
+      "url": "https://docs.github.com/en/webhooks/webhook-events-and-payloads",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Defines the event-type header and the larger upstream payload ceiling considered in the contract."
+    },
+    {
+      "id": "source-github-signatures",
+      "title": "Validating webhook deliveries",
+      "url": "https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries",
+      "accessedAt": "2026-09-10",
+      "decisionImpact": "Defines the HMAC verification behavior to prove in the first receiver tests."
+    }
+  ],
+  "repositories": [
+    {
+      "id": "repo-octokit-webhooks-js",
+      "url": "https://github.com/octokit/webhooks.js",
+      "checkedAt": "2026-09-10",
+      "license": "MIT",
+      "decision": "inspect",
+      "reason": "Actively maintained GitHub webhook tooling and useful prior art, but an extra dependency is unnecessary for the first single-event relay contract.",
+      "sourceInspected": false,
+      "cloned": false,
+      "validationRunIds": ["run-repository-validation"]
+    },
+    {
+      "id": "repo-octokit-webhook-specs",
+      "url": "https://github.com/octokit/webhooks",
+      "checkedAt": "2026-09-10",
+      "license": "MIT",
+      "decision": "inspect",
+      "reason": "Useful if later event types need generated TypeScript payload definitions; the first push-only slice does not need them.",
+      "sourceInspected": false,
+      "cloned": false,
+      "validationRunIds": ["run-repository-validation"]
+    },
+    {
+      "id": "repo-vercel-admin-template",
+      "url": "https://github.com/vercel/nextjs-postgres-nextauth-tailwindcss-template",
+      "checkedAt": "2026-09-10",
+      "license": "MIT",
+      "decision": "reject",
+      "reason": "The template adds authentication and admin-product structure outside scope and had no push for 238 days when checked. A fresh small app has lower adoption and exit cost.",
+      "sourceInspected": false,
+      "cloned": false,
+      "validationRunIds": ["run-repository-validation"]
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "assumption-personal-value",
+      "status": "open",
+      "text": "A personal event ledger remains useful after the integration demo.",
+      "test": "Use it with one real repository for one week after launch and record whether it is opened or whether it recovers an event."
+    },
+    {
+      "id": "assumption-cloud-budget",
+      "status": "open",
+      "text": "The chosen Postgres and long-running HookRelay host fit an acceptable personal-project budget.",
+      "test": "Choose providers before release and record the expected monthly cost; stop if it is not worth the demonstration."
+    }
+  ],
+  "contradictions": [
+    {
+      "id": "contradiction-payload-ceiling",
+      "status": "resolved",
+      "claimIds": ["claim-vercel-body-limit", "claim-hookrelay-five-mb"],
+      "resolution": "For the Devonoma endpoint, configure HookRelay at or below Vercel's 4.5 MB limit and explicitly leave larger payload handling out of scope."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "decision-positioning",
+      "status": "accepted",
+      "text": "Build Devonoma as a personal durable GitHub event ledger, not as a replacement notification inbox.",
+      "claimIds": ["claim-github-no-auto-redelivery", "claim-native-notifications", "claim-events-api-not-realtime"]
+    },
+    {
+      "id": "decision-fresh-app",
+      "status": "accepted",
+      "text": "Build a fresh small Next.js app and adopt no external starter or webhook library for the first slice.",
+      "claimIds": ["claim-signature-raw-body"]
+    },
+    {
+      "id": "decision-event-header",
+      "status": "accepted",
+      "text": "Extend HookRelay with an allowlisted X-GitHub-Event outbound header before Devonoma supports event classification.",
+      "claimIds": ["claim-hookrelay-contract-gap"]
+    },
+    {
+      "id": "decision-idempotent-receiver",
+      "status": "accepted",
+      "text": "Verify the relay signature over raw bytes and use x-hookrelay-event-id under a Postgres unique constraint before returning success.",
+      "claimIds": ["claim-signature-raw-body", "claim-github-timeout"]
+    }
+  ],
+  "runs": [
+    {
+      "id": "run-repository-validation-sandboxed",
+      "ranAt": "2026-09-10",
+      "command": "node D:\\Programming\\Projects\\engineering-playbook\\scripts\\check-repo.mjs octokit/webhooks.js octokit/webhooks vercel/nextjs-postgres-nextauth-tailwindcss-template",
+      "exitCode": 0,
+      "result": "Restricted networking produced false 404 results; the run was treated as invalid and repeated with network permission."
+    },
+    {
+      "id": "run-repository-validation",
+      "ranAt": "2026-09-10",
+      "command": "node D:\\Programming\\Projects\\engineering-playbook\\scripts\\check-repo.mjs octokit/webhooks.js octokit/webhooks vercel/nextjs-postgres-nextauth-tailwindcss-template",
+      "exitCode": 0,
+      "result": "Both Octokit repositories were active and MIT licensed. The MIT Vercel template was 238 days without a push and was rejected as oversized for the scope."
+    },
+    {
+      "id": "run-hookrelay-contract-scan",
+      "ranAt": "2026-09-10",
+      "command": "rg -n -A 8 INGEST_BODY_LIMIT_BYTES src/config.ts; rg -n -A 18 headers src/delivery/process.ts",
+      "exitCode": 0,
+      "result": "Confirmed a 5 MB default and the outbound header set: content-type, regenerated signature, relay event ID, attempt, and idempotency key; X-GitHub-Event is absent."
+    },
+    {
+      "id": "run-hookrelay-contract-tests",
+      "ranAt": "2026-09-10",
+      "command": "npm test; npm run build",
+      "exitCode": 0,
+      "result": "All 213 HookRelay tests passed. The destination receives a valid X-GitHub-Event value, arbitrary source headers stay private, and a scheduled timestamp keeps a circuit-deferred job distinct from the active job. The production build passed."
+    },
+    {
+      "id": "run-devonoma-verification",
+      "ranAt": "2026-09-10",
+      "command": "npm test; npm run test:integration; npm run typecheck; npm run build",
+      "exitCode": 0,
+      "result": "Eleven unit tests and three PostgreSQL integration tests passed, along with strict TypeScript and the Next.js production build. A local HTTP request returned the stored repository, branch, and commit in the timeline."
+    },
+    {
+      "id": "run-local-retry-recovery",
+      "ranAt": "2026-09-10",
+      "command": "Run HookRelay on port 3200 and Devonoma on port 3100; point Devonoma at an unavailable database, ingest one signed push, then restore its database connection.",
+      "exitCode": 0,
+      "result": "HookRelay event 43f0a4a7-f566-44a9-bc96-6ad74e0a722c recorded five 503 attempts and one successful 202 attempt, finishing delivered. Devonoma stored exactly one row with the same relay event ID. The run exposed and verified the fix for HookRelay issue #2."
+    }
+  ],
+  "gates": [
+    {
+      "id": "gate-contract-spike",
+      "stage": "during",
+      "trigger": "Before scaffolding Devonoma's receiver.",
+      "requiredEvidence": "A HookRelay test proves an allowlisted X-GitHub-Event value reaches the destination without forwarding arbitrary inbound headers.",
+      "status": "passed",
+      "owner": "Huzaifa Abdul Rehman",
+      "targetDate": null,
+      "claimIds": ["claim-hookrelay-contract-gap"],
+      "runIds": ["run-hookrelay-contract-tests"]
+    },
+    {
+      "id": "gate-release-proof",
+      "stage": "release",
+      "trigger": "Before the first public-source and Vercel release.",
+      "requiredEvidence": "Relevant tests, clean install, secret scan, legal applicability check, retry recovery observation, and a live GitHub push correlated across HookRelay and Devonoma.",
+      "status": "planned",
+      "owner": "Huzaifa Abdul Rehman",
+      "targetDate": null,
+      "claimIds": [],
+      "runIds": []
+    },
+    {
+      "id": "gate-outcome-review",
+      "stage": "outcome",
+      "trigger": "One week after the first live GitHub event.",
+      "requiredEvidence": "Usage, recovered-delivery evidence, support burden, and actual hosting cost recorded in outcomes.md with a continue, narrow, or stop decision.",
+      "status": "planned",
+      "owner": "Huzaifa Abdul Rehman",
+      "targetDate": null,
+      "claimIds": [],
+      "runIds": []
+    }
+  ]
+}
