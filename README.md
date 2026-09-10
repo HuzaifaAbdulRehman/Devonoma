@@ -4,6 +4,8 @@ Devonoma is a small GitHub activity ledger built to make HookRelay useful in a r
 It accepts signed push events, stores each relay event once, and shows recent work in a
 newest-first timeline.
 
+See the live demo at [devonoma.vercel.app](https://devonoma.vercel.app).
+
 ```text
 GitHub -> HookRelay -> signed webhook -> PostgreSQL -> Devonoma timeline
 ```
