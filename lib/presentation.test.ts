@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 import { firstCommitLine, formatTimestamp, shortCommitSha } from "./presentation";
 
 describe("activity presentation", () => {
-  it("keeps timeline timestamps stable in UTC", () => {
+  it("keeps timeline timestamps stable in Pakistan Standard Time", () => {
     expect(formatTimestamp(new Date("2026-09-11T10:30:00Z"))).toBe(
-      "Sep 11, 2026, 10:30 AM UTC",
+      "Sep 11, 2026, 3:30 PM PKT",
     );
   });
 

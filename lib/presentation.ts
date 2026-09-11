@@ -1,11 +1,11 @@
 const timestampFormatter = new Intl.DateTimeFormat("en", {
   dateStyle: "medium",
   timeStyle: "short",
-  timeZone: "UTC",
+  timeZone: "Asia/Karachi",
 });
 
 export function formatTimestamp(value: Date): string {
-  return `${timestampFormatter.format(value)} UTC`;
+  return `${timestampFormatter.format(value)} PKT`;
 }
 
 export function shortCommitSha(value: string): string {
