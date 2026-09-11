@@ -1,6 +1,6 @@
 # Devonoma
 
-Devonoma is a small GitHub activity ledger built to make HookRelay useful in a real app.
+Devonoma is a small GitHub activity ledger built to make HookRelay useful in a real application.
 It accepts signed push events, stores each relay event once, and shows recent work in a
 newest-first timeline.
 
