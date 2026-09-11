@@ -6,6 +6,8 @@ newest-first timeline.
 
 See the live demo at [devonoma.vercel.app](https://devonoma.vercel.app).
 
+![Devonoma showing GitHub push activity in the live timeline](docs/live-timeline.png)
+
 ```text
 GitHub -> HookRelay -> signed webhook -> PostgreSQL -> Devonoma timeline
 ```
@@ -13,6 +15,12 @@ GitHub -> HookRelay -> signed webhook -> PostgreSQL -> Devonoma timeline
 HookRelay owns delivery and retrying. Devonoma verifies what arrives and owns the readable
 record. If Devonoma or its database is temporarily unavailable, it returns 503 so HookRelay
 can try again.
+
+## What a real delivery looks like
+
+The live demo was verified with a GitHub push sent through HookRelay. Devonoma checked the
+relay signature, wrote the activity to Neon Postgres, and rendered the commit in the deployed
+timeline. A `202` response from Devonoma marks the handoff complete.
 
 ## Run it locally
 
@@ -79,3 +87,11 @@ are comfortable showing publicly; add access control before using it with a priv
 HookRelay does not belong in a Vercel Function because its worker and retry sweeper must keep
 running. Deploy it on a host that supports a continuous Node process, Redis, and PostgreSQL.
 Use the stable production webhook URL, not a preview deployment.
+
+## Production checklist
+
+- Run the SQL migration before the first deployment.
+- Set `DATABASE_URL` and `WEBHOOK_SECRET` as production secrets.
+- Configure GitHub to send push events to HookRelay's public ingest URL.
+- Point the HookRelay endpoint at `/api/webhooks/hookrelay`.
+- Make one real push and confirm it appears in the timeline.
